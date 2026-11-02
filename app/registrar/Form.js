@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { salvarDia } from '../actions';
+import Menu from '../../components/Menu';
 
 const v = (x) => (x == null ? '' : String(x));
 
@@ -45,9 +46,7 @@ export default function Form({ r, titulo, protocolos }) {
   return (
     <main className="page">
       <header className="head">
-        <Link href="/" className="icon-btn" aria-label="Voltar ao painel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
-        </Link>
+        <Menu />
         <div className="grow">
           <h1>Registrar o dia</h1>
           <p>{titulo}{r ? ' · já tem registro, você está editando' : ''}</p>

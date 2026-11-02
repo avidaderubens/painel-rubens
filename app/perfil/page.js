@@ -1,4 +1,5 @@
 import { getAgenda } from '../../lib/data';
+import Menu from '../../components/Menu';
 import { META_SCORE } from '../../lib/config';
 import { sair } from '../actions';
 import Dias from './Dias';
@@ -14,6 +15,7 @@ export default async function Perfil() {
   return (
     <main className="page">
       <header className="head">
+        <Menu />
         <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: 18, background: 'var(--acc-soft)', border: '1px solid var(--acc-line)', color: 'var(--acc)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-num)', fontSize: 26, fontWeight: 700 }}>R</div>
         <div className="grow"><h1>Rubens</h1><p>@avidaderubens · Itajaí</p></div>
       </header>

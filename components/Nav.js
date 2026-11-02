@@ -20,11 +20,11 @@ export default function Nav() {
       <Link href="/registrar" aria-label="Registrar o dia" aria-current={at('/registrar')}>
         <span className="plus"><svg {...S} width={24} height={24} strokeWidth={2.2}><path d="M12 5v14M5 12h14" /></svg></span>
       </Link>
+      <Link href="/treinos" aria-label="Treinos" aria-current={at('/treinos')}>
+        <svg {...S}><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11" /></svg>
+      </Link>
       <Link href="/notas" aria-label="Notas" aria-current={at('/notas')}>
         <svg {...S}><path d="M6 3h9l4 4v14H6z" /><path d="M9 11h7M9 15h7M9 7h4" /></svg>
-      </Link>
-      <Link href="/perfil" aria-label="Perfil" aria-current={at('/perfil')}>
-        <svg {...S}><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
       </Link>
     </nav>
   );

@@ -1,6 +1,8 @@
-import { getMedidas, getPlano, getProtocolos, getRegistro } from '../../lib/data';
+import { getMedidas, getProtocolos, getRegistro } from '../../lib/data';
+import { getDieta, tipoDoDia } from '../../lib/dieta';
+import { semanaProtocolo } from '../../lib/treino';
 import { hoje, addDias, diasEntre, diaSemana } from '../../lib/date';
-import { DIAS } from '../../lib/config';
+import { DIAS, DIAS_LONGO } from '../../lib/config';
 import Saude from './Saude';
 import Erro from '../../components/Erro';
 
@@ -26,11 +28,12 @@ function proxima(p, d) {
 export default async function SaudePage() {
   try {
     const d = hoje();
-    const [plano, { protocolos, aplicacoes }, medidas, registro] = await Promise.all([getPlano(), getProtocolos(), getMedidas(), getRegistro(d)]);
+    const [dieta, { protocolos, aplicacoes }, medidas, registro] = await Promise.all([getDieta(), getProtocolos(), getMedidas(), getRegistro(d)]);
+    const fase = semanaProtocolo(d);
     const prots = protocolos.map((p) => ({ ...p, prox: proxima(p, d), hoje: aplicacoes.some((a) => a.data === d && a.produtoId && a.produtoId.replace(/-/g, '') === p.id.replace(/-/g, '')) }));
     return (
       <Saude
-        plano={plano}
+        dieta={{ ...dieta, tipo: tipoDoDia(d, registro), dia: d, diaNome: DIAS_LONGO[diaSemana(d)].toLowerCase(), semana: `Dieta 90 dias · semana ${fase.semana} de ${fase.total} · ${fase.fase}` }}
         feitas={registro ? registro.refeicoesFeitas : []}
         protocolos={prots}
         aplicacoes={aplicacoes.slice(0, 20)}

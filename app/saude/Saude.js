@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import { useOptimistic, useState, useTransition } from 'react';
-import { marcarRefeicao, registrarAplicacao, salvarMedidas } from '../actions';
+import { useState, useTransition } from 'react';
+import { registrarAplicacao, salvarMedidas } from '../actions';
+import Dieta from './Dieta';
+import Menu from '../../components/Menu';
 import { Spark } from '../../components/Charts';
 
 const ddmm = (iso) => (iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}` : '—');
@@ -13,42 +14,6 @@ const MEDIDAS = [
   ['coxa', 'Coxa (cm)', 'Coxa', 'cm'], ['quadril', 'Quadril (cm)', 'Quadril', 'cm']
 ];
 const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-function Dieta({ plano, feitas }) {
-  const [lista, setLista] = useOptimistic(feitas);
-  const [, start] = useTransition();
-  const toggle = (nome) => start(async () => {
-    const on = !lista.includes(nome);
-    setLista(on ? [...lista, nome] : lista.filter((x) => x !== nome));
-    await marcarRefeicao(nome, on, plano.length);
-  });
-  const qtd = plano.filter((p) => lista.includes(p.nome)).length;
-  return (
-    <>
-      <section className="card">
-        <div className="label">Dieta de hoje</div>
-        <div className="big">{qtd}<small> / {plano.length} refeições</small></div>
-        <div className="track"><i style={{ width: `${plano.length ? (qtd / plano.length) * 100 : 0}%` }} /></div>
-      </section>
-      <section className="card list" aria-label="Refeições">
-        {plano.map((p) => {
-          const on = lista.includes(p.nome);
-          return (
-            <div key={p.id} className={`row${on ? ' done' : ''}`} style={{ minHeight: 72 }}>
-              <div style={{ width: 52, flexShrink: 0, fontFamily: 'var(--font-num)', fontSize: 16, fontWeight: 700 }} className="acc">{p.horario || '—'}</div>
-              <span className="txt"><span className="t1">{p.nome}</span><span className="t2" style={{ whiteSpace: 'normal' }}>{p.alimentos || 'Alimentos ainda não cadastrados'}</span></span>
-              <button type="button" className="check" role="checkbox" aria-checked={on} aria-label={`Marcar ${p.nome}`} onClick={() => toggle(p.nome)} style={{ marginLeft: 0, marginRight: -10 }}>
-                <span>{on ? '✓' : ''}</span>
-              </button>
-            </div>
-          );
-        })}
-        {plano.length === 0 && <div className="empty" style={{ margin: '12px 0' }}>Nenhuma refeição no plano. Cadastre no Notion › Saúde › Plano alimentar.</div>}
-      </section>
-      <p className="note" style={{ textAlign: 'center' }}>Horários e alimentos são editados no Notion › Saúde › Plano alimentar.</p>
-    </>
-  );
-}
 
 function Protocolos({ protocolos, aplicacoes, diaSigla }) {
   const [pending, start] = useTransition();
@@ -134,7 +99,7 @@ function Corpo({ medidas }) {
             );
           })}
         </div>
-        {medidas.length < 2 && <p className="note">Os mini-gráficos aparecem a partir da 2ª medição. Meça a cada 15 dias.</p>}
+        {medidas.length < 2 && <p className="note">Os mini-gráficos aparecem a partir da 2ª medição. Meça a cada 14 dias (checkpoint da dieta).</p>}
       </section>
       {!aberto && <button type="button" className="btn" onClick={() => setAberto(true)}>+ Registrar medidas de hoje</button>}
       {aberto && (
@@ -156,14 +121,12 @@ function Corpo({ medidas }) {
   );
 }
 
-export default function Saude({ plano, feitas, protocolos, aplicacoes, medidas, diaSigla }) {
+export default function Saude({ dieta, feitas, protocolos, aplicacoes, medidas, diaSigla }) {
   const [tab, setTab] = useState('dieta');
   return (
     <main className="page">
       <header className="head">
-        <Link href="/" className="icon-btn" aria-label="Voltar ao painel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
-        </Link>
+        <Menu />
         <div className="grow"><h1>Saúde</h1><p>Plano, protocolos e evolução do corpo</p></div>
       </header>
       <div className="seg" role="tablist" style={{ gridTemplateColumns: 'repeat(3, minmax(0,1fr))' }}>
@@ -171,7 +134,7 @@ export default function Saude({ plano, feitas, protocolos, aplicacoes, medidas, 
           <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
-      {tab === 'dieta' && <Dieta plano={plano} feitas={feitas} />}
+      {tab === 'dieta' && <Dieta {...dieta} feitas={feitas} />}
       {tab === 'proto' && <Protocolos protocolos={protocolos} aplicacoes={aplicacoes} diaSigla={diaSigla} />}
       {tab === 'corpo' && <Corpo medidas={medidas} />}
     </main>

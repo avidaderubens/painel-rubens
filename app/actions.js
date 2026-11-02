@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { DS } from '../lib/config';
-import { createPage, updatePage, W } from '../lib/notion';
+import { createPage, updatePage, query, W } from '../lib/notion';
 import { getRegistro, getProtocolos } from '../lib/data';
 import { hoje, addDias, addMeses, ddmm } from '../lib/date';
 import { COOKIE, tokenEsperado } from '../lib/auth';
@@ -173,5 +173,54 @@ export async function salvarMedidas(formData) {
 // ---------- Perfil ----------
 export async function salvarDiasTreino(id, dias) {
   await updatePage(id, { Dias: W.multi(dias) });
+  atualizar();
+}
+
+// ---------- Treinos ----------
+// Grava (ou atualiza) uma série do dia no Registro de séries.
+export async function salvarSerie({ exercicioId, treinoId, nome, serie, carga, reps }) {
+  const d = hoje();
+  const existentes = await query(DS.series, {
+    filter: { and: [
+      { property: 'Data', date: { equals: d } },
+      { property: 'Exercício', relation: { contains: exercicioId } },
+      { property: 'Série', number: { equals: serie } }
+    ] }
+  });
+  const props = { Carga: W.num(carga), Reps: W.num(reps) };
+  if (existentes[0]) await updatePage(existentes[0].id, props);
+  else await createPage(DS.series, {
+    Registro: W.title(`${nome} · ${ddmm(d)} · S${serie}`),
+    Data: W.date(d),
+    'Exercício': W.rel([exercicioId]),
+    ...(treinoId ? { Treino: W.rel([treinoId]) } : {}),
+    'Série': W.num(serie),
+    ...props
+  });
+  revalidatePath('/treinos', 'layout');
+}
+
+export async function concluirTreino(campo) {
+  await upsertRegistro({ [campo]: W.check(true) });
+  atualizar();
+}
+
+export async function salvarCorrida(treinoId, dados) {
+  const d = hoje();
+  await createPage(DS.corridas, {
+    Registro: W.title(`VO2max · ${ddmm(d)}`),
+    Data: W.date(d),
+    ...(treinoId ? { Treino: W.rel([treinoId]) } : {}),
+    Tiros: W.num(dados.tiros), PSE: W.num(dados.pse),
+    'Distância (km)': W.num(dados.km), 'FC média': W.num(dados.fc),
+    Notas: W.text(dados.notas)
+  });
+  await upsertRegistro({ Corrida: W.check(true) });
+  atualizar();
+}
+
+// ---------- Dieta ----------
+export async function definirTipoDia(dia, tipo) {
+  await upsertRegistro({ 'Tipo de dia': W.select(tipo) }, dia);
   atualizar();
 }

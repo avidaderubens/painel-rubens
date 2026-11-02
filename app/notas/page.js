@@ -1,4 +1,5 @@
 import { getNotas, getProjetos } from '../../lib/data';
+import Menu from '../../components/Menu';
 import Captura from './Captura';
 import Erro from '../../components/Erro';
 
@@ -17,6 +18,7 @@ export default async function Notas() {
     return (
       <main className="page">
         <header className="head">
+          <Menu />
           <div className="grow">
             <h1>Notas</h1>
             <p>Anote antes de esquecer. Organiza depois.</p>

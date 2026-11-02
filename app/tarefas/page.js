@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Menu from '../../components/Menu';
 import { getAgenda, getRegistro, getTarefas, separar, treinosDoDia } from '../../lib/data';
 import { hoje } from '../../lib/date';
 import { DIAS_LONGO } from '../../lib/config';
@@ -17,6 +18,7 @@ export default async function Tarefas() {
     return (
       <main className="page">
         <header className="head">
+          <Menu />
           <div className="grow">
             <h1>Tarefas</h1>
             <p>{abas.todas.length} abertas · {abas.concluidas} concluídas</p>

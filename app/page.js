@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Menu from '../components/Menu';
 import { getAgenda, getRegistros, getTarefas, separar, treinosDoDia } from '../lib/data';
 import { hoje, addDias } from '../lib/date';
 import { META_SCORE } from '../lib/config';
@@ -48,6 +49,7 @@ export default async function Painel() {
   return (
     <main className="page">
       <header className="head">
+        <Menu />
         <div className="grow">
           <h1>Painel Rubens</h1>
           <p>Saúde e performance em tempo real</p>
