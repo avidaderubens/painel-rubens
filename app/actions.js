@@ -224,3 +224,16 @@ export async function definirTipoDia(dia, tipo) {
   await upsertRegistro({ 'Tipo de dia': W.select(tipo) }, dia);
   atualizar();
 }
+
+// ---------- Respiração ----------
+// Um teste BOLT por dia: regravar no mesmo dia substitui o valor.
+export async function salvarBolt(segundos) {
+  const d = hoje();
+  const s = Number(String(segundos).replace(',', '.'));
+  if (!Number.isFinite(s) || s <= 0 || s > 300) return { erro: 'Digite os segundos (entre 1 e 300).' };
+  const existentes = await query(DS.bolt, { filter: { property: 'Data', date: { equals: d } } });
+  if (existentes[0]) await updatePage(existentes[0].id, { Segundos: W.num(s) });
+  else await createPage(DS.bolt, { Teste: W.title(`BOLT · ${ddmm(d)}`), Data: W.date(d), Segundos: W.num(s) });
+  revalidatePath('/treinos');
+  return { ok: true };
+}

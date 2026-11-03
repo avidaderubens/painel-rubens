@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import Respiracao from './Respiracao';
 
 const Seta = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b6b73" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
@@ -25,7 +26,7 @@ function Lista({ itens, vazio }) {
   );
 }
 
-export default function Hub({ academia, corrida, respiracao, mobilidade }) {
+export default function Hub({ academia, corrida, mobilidade, respiracao }) {
   const [tab, setTab] = useState('acad');
   const mob = mobilidade[0];
   const duplas = mob ? Object.values(mob.itens.reduce((acc, i) => { (acc[i.bloco] = acc[i.bloco] || []).push(i); return acc; }, {})) : [];
@@ -38,9 +39,7 @@ export default function Hub({ academia, corrida, respiracao, mobilidade }) {
       </div>
       {tab === 'acad' && <Lista itens={academia} vazio="Nenhum treino de academia no Notion." />}
       {tab === 'corr' && <Lista itens={corrida} vazio="Nenhum treino de corrida no Notion." />}
-      {tab === 'resp' && (respiracao.length
-        ? <Lista itens={respiracao} vazio="" />
-        : <div className="empty"><b style={{ color: 'var(--fg)', fontSize: 15 }}>Protocolo de respiração</b><br />Ainda não definido. Quando for cadastrado na base Treinos com tipo Respiração, ele aparece aqui.</div>)}
+      {tab === 'resp' && <Respiracao {...respiracao} />}
       {tab === 'mob' && (mob ? (
         <section className="card list" aria-label="Mobilidade">
           {duplas.map((d, i) => (

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getTreinos, treinoDoDia, semanaProtocolo } from '../../lib/treino';
+import { getTreinos, treinoDoDia, semanaProtocolo, getBolt } from '../../lib/treino';
 import { hoje, diaSemana } from '../../lib/date';
 import { DIAS, DIAS_LONGO } from '../../lib/config';
 import Menu from '../../components/Menu';
@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic';
 const ORDEM = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
 export default async function Treinos() {
-  let treinos;
-  try { treinos = await getTreinos(); } catch (e) { return <main className="page"><Erro e={e} /></main>; }
+  let treinos; let bolt;
+  try { [treinos, bolt] = await Promise.all([getTreinos(), getBolt()]); } catch (e) { return <main className="page"><Erro e={e} /></main>; }
   const d = hoje();
   const sigla = DIAS[diaSemana(d)];
   const doDia = treinoDoDia(treinos, d);
@@ -68,7 +68,7 @@ export default async function Treinos() {
         <section className="card"><div className="label">Hoje</div><div style={{ fontSize: 16, fontWeight: 600 }}>Descanso total.</div><p className="note">Jiu-jitsu não entra no domingo.</p></section>
       )}
 
-      <Hub academia={lista('Academia')} corrida={lista('Corrida')} respiracao={lista('Respiração')} mobilidade={lista('Mobilidade')} />
+      <Hub academia={lista('Academia')} corrida={lista('Corrida')} respiracao={{ semanaBloco: ((fase.semana - 1) % 6) + 1, diaSigla: sigla, bolt }} mobilidade={lista('Mobilidade')} />
     </main>
   );
 }

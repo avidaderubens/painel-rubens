@@ -228,3 +228,10 @@ button.food { cursor: pointer; }
 .tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tbl td { padding: 10px 0; border-top: 1px solid var(--line-soft); vertical-align: top; color: #c9c9ce; }
 .tbl td:first-child { color: var(--fg); font-weight: 600; padding-right: 12px; width: 45%; }
+
+/* Respiração */
+.bolt-n { flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 8px; border: 1px solid; }
+.bolt-n.low { color: var(--bad); border-color: #5a2020; background: #1d0f0f; }
+.bolt-n.mid { color: #ffb37a; border-color: var(--acc-line); background: var(--acc-soft); }
+.bolt-n.up { color: var(--ok); border-color: #1f4a37; background: #0d1d16; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
