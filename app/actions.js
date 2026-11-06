@@ -237,3 +237,47 @@ export async function salvarBolt(segundos) {
   revalidatePath('/treinos');
   return { ok: true };
 }
+
+// ---------- Agenda ----------
+export async function salvarBloco(_prev, formData) {
+  const g = (k) => String(formData.get(k) || '').trim();
+  const id = g('id');
+  const titulo = g('titulo');
+  const hh = (v) => { const m = v.match(/^(\d{1,2}):?(\d{2})$/); return m && Number(m[1]) < 24 && Number(m[2]) < 60 ? `${m[1].padStart(2, '0')}:${m[2]}` : ''; };
+  const ini = hh(g('ini'));
+  const fim = hh(g('fim'));
+  const dia = g('dia') || hoje();
+  if (!titulo) return { erro: 'Dê um nome ao bloco.' };
+  if (!/^\d{2}:\d{2}$/.test(ini) || !/^\d{2}:\d{2}$/.test(fim)) return { erro: 'Horário inválido. Use HH:MM, ex.: 18:30.' };
+  if (fim <= ini) return { erro: 'O fim precisa ser depois do início.' };
+  const repetir = g('repetir') || 'Não';
+  const dias = formData.getAll('dias').map(String);
+  if (repetir === 'Dias específicos' && !dias.length) return { erro: 'Escolha ao menos um dia.' };
+  const projeto = g('projeto');
+  const props = {
+    Bloco: W.title(titulo),
+    Tipo: W.select(g('tipo') || 'Pessoal'),
+    'Início': W.text(ini),
+    Fim: W.text(fim),
+    Repetir: W.select(repetir),
+    Dias: W.multi(repetir === 'Dias específicos' ? dias : []),
+    Data: W.date(repetir === 'Não' || repetir === 'Semanal' ? dia : null),
+    'Vínculo': W.select(g('vinculo') || 'Nenhum'),
+    Projeto: W.rel(projeto ? [projeto] : []),
+    Notas: W.text(g('notas'))
+  };
+  if (id) await updatePage(id, props);
+  else await createPage(DS.agendaBlocos, props);
+  atualizar();
+  redirect(`/?d=${dia}`);
+}
+
+export async function excluirBloco(id, dia) {
+  await fetch(`https://api.notion.com/v1/pages/${id}`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${process.env.NOTION_TOKEN}`, 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ in_trash: true })
+  });
+  atualizar();
+  redirect(`/?d=${dia || hoje()}`);
+}
