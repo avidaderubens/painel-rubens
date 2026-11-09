@@ -7,8 +7,10 @@ import Menu from '../../components/Menu';
 
 const v = (x) => (x == null ? '' : String(x));
 
-export default function Form({ r, titulo, protocolos }) {
+export default function Form({ dia, r, j, dias, titulo, protocolos, madrugada }) {
   const reg = r || {};
+  const jor = j || {};
+  const [nota, setNota] = useState(jor.nota ?? null);
   const [sono, setSono] = useState(reg.sono ?? 7);
   const [pending, start] = useTransition();
   const [ok, setOk] = useState(false);
@@ -49,13 +51,28 @@ export default function Form({ r, titulo, protocolos }) {
         <Menu />
         <div className="grow">
           <h1>Registrar o dia</h1>
-          <p>{titulo}{r ? ' · já tem registro, você está editando' : ''}</p>
+          <p>{titulo}{r ? ' · editando' : ''}</p>
         </div>
       </header>
 
+      <nav className="ag-strip" aria-label="Escolher o dia">
+        {dias.map((x) => (
+          <Link key={x.dia} href={`/registrar?d=${x.dia}`} aria-current={x.dia === dia ? 'date' : undefined}>
+            <span>{x.sigla}</span>
+            <b>{x.num}</b>
+            <i>{x.reg && <em style={{ background: '#5cc98a' }} />}{x.jor && <em style={{ background: '#c08cf5' }} />}</i>
+          </Link>
+        ))}
+      </nav>
+      <p className="note" style={{ marginTop: -6 }}>
+        <span style={{ color: '#5cc98a' }}>●</span> registro <span style={{ color: '#c08cf5', marginLeft: 8 }}>●</span> journal
+        {madrugada && <b style={{ color: 'var(--acc)', marginLeft: 8 }}>Madrugada: abrindo o dia de ontem.</b>}
+      </p>
+
       <form onSubmit={enviar} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <input type="hidden" name="dia" value={dia} />
         <section className="card">
-          <div className="card-head"><h2>Treinos de hoje</h2><span className="note">toque para marcar</span></div>
+          <div className="card-head"><h2>Treinos do dia</h2><span className="note">toque para marcar</span></div>
           <div className="toggle-grid">{['Jiu-jitsu', 'Academia', 'Corrida', 'Respiração'].map(treino)}</div>
           <p className="note">Os treinos do dia também aparecem em Tarefas › Hoje.</p>
         </section>
@@ -91,8 +108,25 @@ export default function Form({ r, titulo, protocolos }) {
         </section>
 
         <section className="card">
-          <label htmlFor="obs" style={{ fontSize: 18, fontWeight: 600 }}>Observações</label>
-          <textarea id="obs" name="obs" rows={3} className="input" placeholder="Como você se sentiu, algo fora do normal…" defaultValue={v(reg.Notas)} />
+          <label htmlFor="obs" style={{ fontSize: 18, fontWeight: 600 }}>Observações de saúde</label>
+          <textarea id="obs" name="obs" rows={2} className="input" placeholder="Dor, cansaço, algo fora do normal…" defaultValue={v(reg.Notas)} />
+        </section>
+
+        <section className="card jr" aria-label="Journal do dia">
+          <div className="card-head"><h2>Journal</h2><span className="note">vai para o Journal no Notion</span></div>
+          <div className="field">
+            <span className="label">Nota do dia</span>
+            <input type="hidden" name="nota" value={nota ?? ''} />
+            <div className="jr-nota" role="radiogroup" aria-label="Nota do dia de 1 a 10">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                <button key={n} type="button" role="radio" aria-checked={nota === n} onClick={() => setNota(nota === n ? null : n)}>{n}</button>
+              ))}
+            </div>
+          </div>
+          <div className="field"><label htmlFor="vitoria">Vitória do dia</label><input id="vitoria" name="vitoria" className="input" placeholder="O que deu certo hoje" defaultValue={v(jor.vitoria)} /></div>
+          <div className="field"><label htmlFor="ajustar">Ajustar amanhã</label><input id="ajustar" name="ajustar" className="input" placeholder="O que fazer diferente" defaultValue={v(jor.ajustar)} /></div>
+          <div className="field"><label htmlFor="gratidao">Gratidão</label><input id="gratidao" name="gratidao" className="input" placeholder="Opcional" defaultValue={v(jor.gratidao)} /></div>
+          <div className="field"><label htmlFor="journal">Escrita livre</label><textarea id="journal" name="journal" rows={7} className="input" placeholder="Como foi o dia, o que passou pela cabeça…" defaultValue={v(jor.journal)} /></div>
         </section>
 
         <button type="submit" className="btn" disabled={pending}>{pending ? 'Salvando…' : ok ? 'Salvo ✓' : 'Salvar o dia'}</button>

@@ -321,3 +321,33 @@ form .input[type="date"], form .input[type="time"] { width: 100%; min-width: 0; 
 .crm-form { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
 .crm-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
 .crm-lembrete { background: rgba(255, 107, 94, 0.05); border: 1px solid rgba(255, 107, 94, 0.25); border-radius: 18px; padding: 12px; }
+
+/* ---------- Journal e revisão ---------- */
+.jr { display: flex; flex-direction: column; gap: 12px; }
+.jr-nota { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
+.jr-nota button { height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-family: var(--font-num); font-size: 16px; font-weight: 700; padding: 0; cursor: pointer; }
+.jr-nota button[aria-checked="true"] { background: var(--acc); border-color: var(--acc); color: #0c0c0e; }
+.rv-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.rv-tiles div { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+.rv-tiles b { font-family: var(--font-num); font-size: 24px; line-height: 1; }
+.rv-tiles span { font-size: 12px; color: var(--muted); font-weight: 600; }
+.rv-fb { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rv-fb li { font-size: 15px; line-height: 1.4; color: #c9c9ce; padding-left: 22px; position: relative; }
+.rv-fb li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
+.rv-fb li.bom::before { content: '✓'; color: #5cc98a; }
+.rv-fb li.ruim::before { content: '!'; color: #ff6b5e; left: 4px; }
+.rv-fb li.neutro::before { content: '·'; color: var(--acc); left: 4px; font-size: 20px; line-height: 0.9; }
+.rv-dia { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
+.rv-dia.futuro { opacity: 0.45; }
+.rv-top { display: flex; gap: 10px; align-items: flex-start; }
+.rv-nome { font-family: var(--font-num); font-size: 19px; font-weight: 700; }
+.rv-nome span { color: var(--muted); font-weight: 600; font-size: 15px; margin-left: 4px; }
+.rv-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.rv-chips span { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 8px; background: #1d1d22; color: #c9c9ce; }
+.rv-chips span.ok { background: rgba(92, 201, 138, 0.14); color: #5cc98a; }
+.rv-n { width: 44px; height: 44px; border-radius: 12px; background: var(--acc-soft); color: var(--acc); font-family: var(--font-num); font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rv-j { display: flex; flex-direction: column; gap: 4px; }
+.rv-j p { margin: 0; font-size: 14px; color: #c9c9ce; line-height: 1.4; }
+.rv-j b { color: var(--fg); }
+.rv-j summary { font-size: 14px; color: var(--acc); cursor: pointer; font-weight: 600; }
+.rv-edit { font-size: 14px; font-weight: 600; color: var(--acc); text-decoration: none; align-self: flex-start; }

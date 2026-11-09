@@ -6,7 +6,8 @@ import { revalidatePath } from 'next/cache';
 import { DS } from '../lib/config';
 import { createPage, updatePage, query, W } from '../lib/notion';
 import { getRegistro, getProtocolos } from '../lib/data';
-import { hoje, addDias, addMeses, ddmm } from '../lib/date';
+import { hoje, addDias, addMeses, ddmm, valida } from '../lib/date';
+import { getJournal } from '../lib/journal';
 import { COOKIE, tokenEsperado } from '../lib/auth';
 
 const atualizar = () => revalidatePath('/', 'layout');
@@ -40,10 +41,11 @@ export async function marcarCampo(campo, valor) {
 export async function salvarDia(formData) {
   const n = (k) => W.num(formData.get(k));
   const c = (k) => W.check(formData.get(k) === 'on');
+  const t = (k) => String(formData.get(k) || '').trim();
+  const d = valida(t('dia')) || hoje();
   // Protocolo marcado agora (e não antes) vira uma aplicação no histórico.
-  const antes = await getRegistro();
+  const antes = await getRegistro(d);
   const { protocolos, aplicacoes } = await getProtocolos();
-  const d = hoje();
   for (const nome of ['Ipamorelin', 'Retatrutida']) {
     const marcadoAgora = formData.get(nome) === 'on' && !(antes && antes[nome]);
     const p = protocolos.find((x) => x.nome === nome);
@@ -60,9 +62,33 @@ export async function salvarDia(formData) {
     'Peso (kg)': n('peso'), 'Sono (h)': n('sono'),
     Ipamorelin: c('Ipamorelin'), Retatrutida: c('Retatrutida'),
     Notas: W.text(formData.get('obs'))
-  });
+  }, d);
+  // Journal do dia: só grava se tiver algo escrito ou nota.
+  if (t('journal') || t('vitoria') || t('ajustar') || t('gratidao') || t('nota')) {
+    await upsertJournal(d, 'Dia', {
+      Nota: W.num(t('nota')), Journal: W.text(t('journal')), 'Vitória': W.text(t('vitoria')),
+      Ajustar: W.text(t('ajustar')), 'Gratidão': W.text(t('gratidao'))
+    });
+  }
   atualizar();
   return { ok: true };
+}
+
+async function upsertJournal(dia, tipo, props) {
+  const atual = await getJournal(dia, tipo);
+  if (atual) return updatePage(atual.id, props);
+  return createPage(DS.journal, { Entrada: W.title(`${tipo === 'Semana' ? 'Semana de ' : ''}${ddmm(dia)}`), Data: W.date(dia), Tipo: W.select(tipo), ...props });
+}
+
+export async function salvarRevisao(_prev, formData) {
+  const t = (k) => String(formData.get(k) || '').trim();
+  const seg = valida(t('seg'));
+  if (!seg) return { erro: 'Semana inválida.' };
+  await upsertJournal(seg, 'Semana', {
+    Nota: W.num(t('nota')), 'Vitória': W.text(t('vitoria')), Ajustar: W.text(t('ajustar')), Journal: W.text(t('journal'))
+  });
+  atualizar();
+  return { ok: true, t: Date.now() };
 }
 
 export async function marcarRefeicao(nome, feita, totalPlano) {

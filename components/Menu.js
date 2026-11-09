@@ -14,6 +14,7 @@ const ITENS = [
   ['/crm', 'CRM', 'M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM22 19v-1a4 4 0 0 0-3-3.87M16 3.13a3.5 3.5 0 0 1 0 6.75'],
   ['/registrar', 'Registrar o dia', 'M12 5v14M5 12h14'],
   ['/treinos', 'Treinos', 'M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11'],
+  ['/revisao', 'Revisão da semana', 'M4 5h16M4 12h10M4 19h7M17 15l2 2 4-4'],
   ['/notas', 'Notas', 'M6 3h9l4 4v14H6zM9 11h7M9 15h7M9 7h4'],
   ['/saude', 'Saúde', 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z']
 ];
