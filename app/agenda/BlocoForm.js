@@ -43,7 +43,7 @@ export default function BlocoForm({ bloco, dia, projetos, outros }) {
     <form action={acao} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {bloco && <input type="hidden" name="id" value={bloco.id} />}
       <header className="head">
-        <Link href={`/?d=${dia}`} className="icon-btn" aria-label="Cancelar">
+        <Link href={`/agenda?d=${dia}`} className="icon-btn" aria-label="Cancelar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
         </Link>
         <div className="grow"><h1>{novo ? 'Novo bloco' : 'Editar bloco'}</h1></div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { marcarRefeicao, registrarAplicacao } from './actions';
+import { marcarRefeicao, registrarAplicacao } from '../actions';
 
 const H = 56;
 const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
@@ -17,7 +17,7 @@ function agoraSP() {
 export function Abas({ ativa, d }) {
   return (
     <div className="seg" role="tablist" style={{ gridTemplateColumns: '1fr 1fr' }}>
-      <Link href={`/?d=${d}`} role="tab" aria-selected={ativa === 'dia'} className="seg-a">Dia</Link>
+      <Link href={`/agenda?d=${d}`} role="tab" aria-selected={ativa === 'dia'} className="seg-a">Dia</Link>
       <Link href={`/agenda/semana?d=${d}`} role="tab" aria-selected={ativa === 'semana'} className="seg-a">Semana</Link>
     </div>
   );
@@ -73,7 +73,7 @@ export default function AgendaDia({ d, hoje, blocos, semana, legenda }) {
 
       <nav className="ag-strip" aria-label="Dias da semana">
         {semana.map((s) => (
-          <Link key={s.dia} href={`/?d=${s.dia}`} aria-current={s.dia === d ? 'date' : undefined} className={s.dia === hoje ? 'hoje' : undefined}>
+          <Link key={s.dia} href={`/agenda?d=${s.dia}`} aria-current={s.dia === d ? 'date' : undefined} className={s.dia === hoje ? 'hoje' : undefined}>
             <span>{s.sigla}</span>
             <b>{s.num}</b>
             <i>{s.cores.map((c) => <em key={c} style={{ background: c }} />)}</i>

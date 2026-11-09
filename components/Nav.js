@@ -11,11 +11,11 @@ export default function Nav() {
   const at = (ok) => (ok ? 'page' : undefined);
   return (
     <nav className="nav" aria-label="Navegação principal">
-      <Link href="/" aria-label="Agenda" aria-current={at(p === '/' || p.startsWith('/agenda'))}>
-        <svg {...S}><rect x="4" y="4" width="16" height="17" rx="2" /><path d="M4 10h16M8 2v4M16 2v4" /></svg>
-      </Link>
-      <Link href="/tarefas" aria-label="Tarefas" aria-current={at(p.startsWith('/tarefas'))}>
+      <Link href="/" aria-label="Tarefas" aria-current={at(p === '/' || p.startsWith('/tarefas'))}>
         <svg {...S}><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+      </Link>
+      <Link href="/notas" aria-label="Notas" aria-current={at(p.startsWith('/notas'))}>
+        <svg {...S}><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h7M9 17h5" /></svg>
       </Link>
       <Link href="/registrar" aria-label="Registrar o dia" aria-current={at(p.startsWith('/registrar'))}>
         <span className="plus"><svg {...S} width={24} height={24} strokeWidth={2.2}><path d="M12 5v14M5 12h14" /></svg></span>

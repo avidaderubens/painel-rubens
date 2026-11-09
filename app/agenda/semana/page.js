@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Menu from '../../../components/Menu';
 import Erro from '../../../components/Erro';
-import { Abas } from '../../AgendaDia';
+import { Abas } from '../AgendaDia';
 import { getBlocos, montarDia, segundaDa, TIPOS } from '../../../lib/agenda';
 import { getTreinos } from '../../../lib/treino';
 import { hoje, addDias, ddmm } from '../../../lib/date';
@@ -51,7 +51,7 @@ export default async function Semana({ searchParams }) {
         <div className="ag-sem-head">
           <span />
           {dias.map((x) => (
-            <Link key={x.dia} href={`/?d=${x.dia}`} className={x.dia === h ? 'hoje' : undefined}>
+            <Link key={x.dia} href={`/agenda?d=${x.dia}`} className={x.dia === h ? 'hoje' : undefined}>
               <span>{x.sigla}</span><b>{x.num}</b>
             </Link>
           ))}
@@ -61,7 +61,7 @@ export default async function Semana({ searchParams }) {
             <div key={hh} className="ag-sem-hora" style={{ top: (hh - ini) * H }}>{hh % 2 === 1 ? '' : `${hh}h`}</div>
           ))}
           {dias.map((x, i) => (
-            <Link key={x.dia} href={`/?d=${x.dia}`} className={`ag-sem-col${x.dia === h ? ' hoje' : ''}`} style={{ left: `calc(30px + (100% - 30px) * ${i} / 7)` }} aria-label={`Abrir ${x.sigla} ${x.num}`}>
+            <Link key={x.dia} href={`/agenda?d=${x.dia}`} className={`ag-sem-col${x.dia === h ? ' hoje' : ''}`} style={{ left: `calc(30px + (100% - 30px) * ${i} / 7)` }} aria-label={`Abrir ${x.sigla} ${x.num}`}>
               {x.blocos.map((b) => (
                 <span key={b.id} style={{ top: ((b.s / 60) - ini) * H, height: Math.max(6, ((b.e - b.s) / 60) * H - 2), background: `linear-gradient(${b.bg}, ${b.bg}), var(--bg)`, borderColor: b.cor }}>
                   {(b.e - b.s) >= 45 ? b.titulo.split(' · ')[0].replace(/^Treino do dia$/, 'Treino') : ''}

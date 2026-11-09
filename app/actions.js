@@ -295,7 +295,7 @@ export async function salvarBloco(_prev, formData) {
   if (id) await updatePage(id, props);
   else await createPage(DS.agendaBlocos, props);
   atualizar();
-  redirect(`/?d=${dia}`);
+  redirect(`/agenda?d=${dia}`);
 }
 
 export async function excluirBloco(id, dia) {
@@ -305,7 +305,7 @@ export async function excluirBloco(id, dia) {
     body: JSON.stringify({ in_trash: true })
   });
   atualizar();
-  redirect(`/?d=${dia || hoje()}`);
+  redirect(`/agenda?d=${dia || hoje()}`);
 }
 
 // ---------- CRM ----------
