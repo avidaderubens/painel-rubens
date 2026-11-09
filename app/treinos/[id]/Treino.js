@@ -60,18 +60,22 @@ export default function Treino({ treino, itens, mobilidade, calibracao, deload, 
       {deload && ehAcademia && (
         <div className="callout"><b>Semana de deload.</b> Metade das séries, mesma carga.</div>
       )}
+      {ehAcademia && !calibracao && !deload && (
+        <div className="callout"><b>Progressão.</b> Força (até 8 reps): fechou o topo da faixa em todas as séries, sobe 2,5–5 kg. Hipertrofia: termine com 1–2 reps na reserva; fechou o topo em todas, sobe a carga.</div>
+      )}
+      {ehAcademia && treino.notas && <p className="note" style={{ margin: 0 }}>{treino.notas}</p>}
 
       {duplas.length > 0 && (
         <section className="card" style={{ padding: 0, gap: 0 }}>
           <button type="button" onClick={() => setMobAberta(!mobAberta)} aria-expanded={mobAberta}
             style={{ minHeight: 56, display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px', background: 'transparent', border: 0, color: 'var(--fg)', cursor: 'pointer', textAlign: 'left' }}>
-            <span className="grow" style={{ fontSize: 15, fontWeight: 600 }}>Aquecimento · mobilidade 10 min</span>
-            <span className="note" style={{ fontSize: 13 }}>{duplas.length} duplas</span>
+            <span className="grow" style={{ fontSize: 15, fontWeight: 600 }}>Aquecimento · 5 min</span>
+            <span className="note" style={{ fontSize: 13 }}>{duplas.length} {duplas.length === 1 ? 'dupla' : 'duplas'}</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b6b73" strokeWidth="2" strokeLinecap="round" aria-hidden="true" style={{ transform: mobAberta ? 'rotate(180deg)' : 'none' }}><path d="M6 9l6 6 6-6" /></svg>
           </button>
           {mobAberta && (
             <div style={{ padding: '0 16px 12px' }}>
-              <p className="note" style={{ margin: '0 0 6px' }}>3 voltas de cada dupla, um exercício seguido do outro.</p>
+              <p className="note" style={{ margin: '0 0 6px' }}>1 volta de cada dupla, um exercício seguido do outro.</p>
               {duplas.map((d, i) => (
                 <div key={i} style={{ padding: '8px 0', borderTop: '1px solid var(--line-soft)', display: 'flex', flexDirection: 'column', gap: 2, fontSize: 14 }}>
                   {d.map((x, j) => <span key={x.id}><span className="note">{j + 1} </span>{x.nome} · {x.reps}</span>)}
@@ -85,6 +89,7 @@ export default function Treino({ treino, itens, mobilidade, calibracao, deload, 
       {blocos.map((b) => (
         <section key={b.nome} aria-label={b.nome} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <h2 className="bloco-t">{b.nome}</h2>
+          {/^Conjugado/.test(b.nome) && <p className="note" style={{ margin: '-4px 0 0' }}>Os dois em sequência, sem pausa. Descanse 60–90s só depois do par.</p>}
           <div className="card list" style={{ padding: '0 6px 0 16px' }}>
             {b.itens.map((i) => {
               const on = feito(i);
@@ -96,6 +101,7 @@ export default function Treino({ treino, itens, mobilidade, calibracao, deload, 
                       {i.categoria && i.categoria !== 'Mobilidade' && <span className={tagCls[i.categoria] || 'tag'}>{i.categoria}</span>}
                     </span>
                     <span className="t2" style={{ fontSize: 13 }}>{i.presc}{i.parcial && !i.feito ? ` · ${i.parcial} série${i.parcial > 1 ? 's' : ''} salva${i.parcial > 1 ? 's' : ''}` : ''}</span>
+                    {i.ultima && <span className="t2" style={{ fontSize: 12.5, color: 'var(--acc)' }}>{i.ultima}</span>}
                   </Link>
                   <button type="button" className="check round" role="checkbox" aria-checked={on} aria-label={`Concluir ${i.nome}`} onClick={() => !i.feito && toggle(i)} style={{ width: 48, height: 48, marginLeft: 0 }}>
                     <span>{on ? '✓' : ''}</span>

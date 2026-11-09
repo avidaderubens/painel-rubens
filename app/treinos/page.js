@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getTreinos, treinoDoDia, semanaProtocolo, getBolt } from '../../lib/treino';
+import { getTreinos, treinoDoDia, semanaProtocolo, semanaAcademia, getBolt } from '../../lib/treino';
 import { hoje, diaSemana } from '../../lib/date';
 import { DIAS, DIAS_LONGO } from '../../lib/config';
 import Menu from '../../components/Menu';
@@ -16,15 +16,15 @@ export default async function Treinos() {
   const d = hoje();
   const sigla = DIAS[diaSemana(d)];
   const doDia = treinoDoDia(treinos, d);
-  const mob = treinos.find((t) => t.tipo === 'Mobilidade');
-  const fase = semanaProtocolo(d);
+  const fase = semanaProtocolo(d); // respiração segue o protocolo de 13 semanas
+  const acad = semanaAcademia(d);
   const semana = ORDEM.map((s) => {
     const t = treinos.find((x) => x.dia === s);
-    const sig = t ? (t.tipo === 'Corrida' ? 'VO2' : t.codigo || t.nome.slice(0, 3)) : s === 'Qua' && mob ? 'M' : '–';
-    const href = t ? `/treinos/${t.id}` : s === 'Qua' && mob ? `/treinos/${mob.id}` : null;
-    return { s, sig, href, hoje: s === sigla, folga: !t && !(s === 'Qua' && mob) };
+    const sig = t ? (t.codigo || t.nome.slice(0, 3)) : s === 'Dom' ? 'Off' : '–';
+    const href = t ? `/treinos/${t.id}` : null;
+    return { s, sig, href, hoje: s === sigla, folga: !t };
   });
-  const hero = doDia || (sigla === 'Qua' ? mob : null);
+  const hero = doDia;
   const lista = (tipo) => treinos.filter((t) => t.tipo === tipo).map((t) => ({
     id: t.id, nome: t.nome, codigo: t.codigo, foco: t.foco, dia: t.dia, n: t.itens.length, duracao: t.duracao,
     itens: t.tipo === 'Mobilidade' ? t.itens.map((i) => ({ id: i.id, bloco: i.bloco, nome: i.nome, reps: `${i.repsMin ?? ''} ${i.unidadeReps}`.trim() })) : []
@@ -36,7 +36,7 @@ export default async function Treinos() {
         <Menu />
         <div className="grow">
           <h1>Treinos</h1>
-          <p>Semana {fase.semana} de {fase.total} · {fase.fase}</p>
+          <p>Academia · semana {acad.semana} · {acad.fase}</p>
         </div>
       </header>
 
@@ -60,12 +60,13 @@ export default async function Treinos() {
           <div className="meta">
             <span>{hero.itens.length} {hero.tipo === 'Corrida' ? 'etapas' : 'exercícios'}</span>
             {hero.duracao ? <span>~{hero.duracao} min</span> : null}
-            {hero.tipo === 'Academia' && mob ? <span>+{mob.duracao} min mobilidade</span> : null}
+            {hero.tipo === 'Academia' ? <span>+5 min aquecimento</span> : null}
+            {hero.tipo === 'Academia' && sigla !== 'Sáb' ? <span>+ jiu-jitsu</span> : null}
           </div>
           <Link href={`/treinos/${hero.id}`} className="btn">Começar treino</Link>
         </section>
       ) : (
-        <section className="card"><div className="label">Hoje</div><div style={{ fontSize: 16, fontWeight: 600 }}>Descanso total.</div><p className="note">Jiu-jitsu não entra no domingo.</p></section>
+        <section className="card"><div className="label">Hoje</div><div style={{ fontSize: 16, fontWeight: 600 }}>Descanso.</div><p className="note">Opcional: corrida leve de 30–40 min respirando só pelo nariz.</p></section>
       )}
 
       <Hub academia={lista('Academia')} corrida={lista('Corrida')} respiracao={{ semanaBloco: ((fase.semana - 1) % 6) + 1, diaSigla: sigla, bolt }} mobilidade={lista('Mobilidade')} />

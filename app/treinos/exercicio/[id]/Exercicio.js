@@ -22,14 +22,16 @@ function bip() {
 
 // Mesma regra do plano: fechou o topo da faixa em todas as séries, sobe a carga.
 function sugestao(item, ultima) {
-  if (!ultima || !ultima.series.length || item.repsMax == null) return null;
+  if (!ultima || !ultima.series.length) return null;
+  if (item.repsMax == null) return ['hold', 'Tente passar do último tempo'];
+  const forca = item.categoria === 'Força' || item.repsMax <= 8;
   const feitas = ultima.series.filter((s) => s.reps != null);
   if (feitas.length >= item.series && feitas.every((s) => s.reps >= item.repsMax)) {
-    if (item.categoria === 'Força') return ['up', 'Subir 2,5–5 kg'];
     if (item.categoria === 'Potência') return ['up', 'Subir um pouco, mantendo a velocidade'];
+    if (forca) return ['up', 'Subir 2,5–5 kg'];
     return ['up', 'Subir a carga'];
   }
-  return ['hold', 'Mesma carga, busque +1 rep'];
+  return ['hold', forca ? 'Mesma carga, busque +1 rep' : 'Mesma carga, +1 rep · 1–2 na reserva'];
 }
 
 export default function Exercicio({ treino, item, exercicio, posicao, proximo, hoje, ultima }) {
