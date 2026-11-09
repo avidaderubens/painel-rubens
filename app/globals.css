@@ -298,3 +298,26 @@ button.food { cursor: pointer; }
 .ag-totais span { flex-grow: 1; color: #c9c9ce; }
 .ag-totais b { font-family: var(--font-num); font-size: 17px; }
 form .input[type="date"], form .input[type="time"] { width: 100%; min-width: 0; }
+
+/* ---------- CRM ---------- */
+.crm-resumo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.crm-resumo a { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-decoration: none; color: var(--muted); text-align: center; }
+.crm-resumo b { font-family: var(--font-num); font-size: 24px; line-height: 1; color: var(--fg); }
+.crm-resumo span { font-size: 11px; font-weight: 600; line-height: 1.15; }
+.crm-grupo, .crm-lembrete { display: flex; flex-direction: column; gap: 8px; }
+.crm-grupo h2, .crm-lembrete h2 { margin: 6px 0 0; font-size: 12px; }
+.crm-card { border-left: 4px solid; display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; }
+.crm-top { display: flex; gap: 10px; align-items: flex-start; }
+.crm-nome { font-family: var(--font-num); font-size: 19px; font-weight: 700; line-height: 1.15; }
+.crm-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-top: 2px; }
+.crm-sub { margin: 0; font-size: 14px; color: #c9c9ce; line-height: 1.4; }
+.crm-tar { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.crm-tar li { font-size: 13.5px; color: var(--fg); padding-left: 16px; position: relative; }
+.crm-tar li::before { content: '☐'; position: absolute; left: 0; color: var(--acc); font-size: 12px; }
+.crm-tar small { color: var(--muted); }
+.crm-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.crm-acoes .btn { flex: 1 1 0; min-width: 0; white-space: nowrap; }
+.crm-acoes .crm-wa { color: #5cc98a; }
+.crm-form { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.crm-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.crm-lembrete { background: rgba(255, 107, 94, 0.05); border: 1px solid rgba(255, 107, 94, 0.25); border-radius: 18px; padding: 12px; }

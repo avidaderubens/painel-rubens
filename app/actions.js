@@ -281,3 +281,42 @@ export async function excluirBloco(id, dia) {
   atualizar();
   redirect(`/?d=${dia || hoje()}`);
 }
+
+// ---------- CRM ----------
+export async function tarefaDoContato(id, nome) {
+  await createPage(DS.tarefas, {
+    Nome: W.title(`Falar com ${nome}`),
+    Quando: W.select('Hoje'),
+    'Recorrência': W.select('Única'),
+    Data: W.date(hoje()),
+    Feito: W.check(false),
+    CRM: W.rel([id])
+  });
+  atualizar();
+}
+
+export async function faleiHoje(id, tarefas) {
+  await updatePage(id, { 'Último contato': W.date(hoje()) });
+  // Tarefas "Falar com…" abertas desse contato saem da lista.
+  await Promise.all((tarefas || []).map((t) => updatePage(t, { Feito: W.check(true) })));
+  atualizar();
+}
+
+export async function salvarContato(_prev, formData) {
+  const g = (k) => String(formData.get(k) || '').trim();
+  const nome = g('nome');
+  if (!nome) return { erro: 'Coloque o nome.' };
+  const props = {
+    Nome: W.title(nome),
+    'Frequência': W.select(g('freq') || null),
+    Proximidade: W.select(g('prox') || null),
+    WhatsApp: W.phone(g('whats') || null),
+    Origem: W.text(g('origem')),
+    Notas: W.text(g('notas'))
+  };
+  const id = g('id');
+  if (id) await updatePage(id, props);
+  else await createPage(DS.crm, { ...props, ...(g('ultimo') ? { 'Último contato': W.date(g('ultimo')) } : {}) });
+  atualizar();
+  return { ok: true, t: Date.now() };
+}
