@@ -113,7 +113,7 @@ export default function Exercicio({ treino, item, exercicio, posicao, proximo, h
         <div><span className="note">{item.unidadeReps === 'reps' ? 'Reps' : item.unidadeReps}</span><b>{faixa}</b></div>
         <div><span className="note">Descanso</span><b style={{ fontSize: 18, lineHeight: '26px' }}>{item.descanso || '—'}</b></div>
       </section>
-      {item.obs && <p className="note" style={{ fontSize: 13 }}>{item.obs}</p>}
+      {item.obs && <p className="note" style={{ fontSize: 14, whiteSpace: 'pre-line', lineHeight: 1.5 }}>{item.obs}</p>}
 
       <section className="card" aria-label="Séries" style={{ gap: 10 }}>
         <div className="card-head" style={{ flexWrap: 'wrap' }}>
